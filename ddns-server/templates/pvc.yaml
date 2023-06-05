@@ -1,0 +1,39 @@
+{{- if .Values.persistentStorage.dbData.enabled  }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "ddns-server.fullname" . }}-dbdata
+  labels:
+    {{- include "ddns-server.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  accessModes: 
+  {{- toYaml .Values.persistentStorage.dbData.accessModes | nindent 4 }}
+  resources:
+    requests:
+      storage: {{ .Values.persistentStorage.dbData.size }}
+  storageClassName: {{ .Values.persistentStorage.dbData.storageClass }}
+{{- end }}
+
+---
+
+{{- if .Values.persistentStorage.cacheData.enabled  }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "ddns-server.fullname" . }}-cachedata
+  labels:
+    {{- include "ddns-server.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  accessModes: 
+  {{- toYaml .Values.persistentStorage.cacheData.accessModes | nindent 4 }}
+  resources:
+    requests:
+      storage: {{ .Values.persistentStorage.cacheData.size }}
+  storageClassName: {{ .Values.persistentStorage.cacheData.storageClass }}
+{{- end }}
+
+
