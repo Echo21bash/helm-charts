@@ -14,23 +14,19 @@
 
 ### 2. 添加helm仓库
 ```bash
-export NAMESPACE=140052-public
-helm repo add $NAMESPACE https://repomanage.rdc.aliyun.com/helm_repositories/$NAMESPACE --username=jPm8Z0 --password=EXr5KzbS1G
+helm repo add aliyun-140052-public https://repomanage.rdc.aliyun.com/helm_repositories/140052-public --username=jPm8Z0 --password=EXr5KzbS1G
 helm repo list 
-helm search repo 140052-public
+helm repo update
+helm search repo aliyun-140052-public/ddns-server
 ```
 
-若添加后有更新需求，使用下面命令更新helm仓库
-```bash
-helm repo update 140052-public
-```
 ### 3. 部署服务
 ```bash
-helm install -n ${namespace} --create-namespace  ${release_name} 140052-public/ddns-server
-  --set env.DDNS_ADMIN_LOGIN: 'admin:$apr1$j1mUQ18Z$Moa8a7FOwjvnSS/BRYIgm0' \
-  --set env.DDNS_DOMAINS: 'gioneco.local.com' \
-  --set env.DDNS_PARENT_NS: 'ns.local.com' \
-  --set env.DDNS_DEFAULT_TTL: '3600' \
+helm install -n test --create-namespace  ddns-server aliyun-140052-public/ddns-server \
+  --set env.DDNS_ADMIN_LOGIN='admin:$apr1$j1mUQ18Z$Moa8a7FOwjvnSS/BRYIgm0' \
+  --set env.DDNS_DOMAINS='gioneco.local.com' \
+  --set env.DDNS_PARENT_NS='ns.local.com' \
+  --set env.DDNS_DEFAULT_TTL='3600' \
   --set persistentStorage.dbData.storageClass='k8s-nfs-storage' \
   --set persistentStorage.cacheData.storageClass='k8s-nfs-storage'
 ```
