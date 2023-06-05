@@ -22,7 +22,7 @@ helm search repo aliyun-140052-public/ddns-server
 
 ### 3. 部署服务
 ```bash
-helm install -n test --create-namespace  ddns-server aliyun-140052-public/ddns-server \
+helm install ddns-server aliyun-140052-public/ddns-server \
   --set env.DDNS_ADMIN_LOGIN='admin:$apr1$j1mUQ18Z$Moa8a7FOwjvnSS/BRYIgm0' \
   --set env.DDNS_DOMAINS='gioneco.local.com' \
   --set env.DDNS_PARENT_NS='ns.local.com' \
@@ -30,36 +30,26 @@ helm install -n test --create-namespace  ddns-server aliyun-140052-public/ddns-s
   --set persistentStorage.dbData.storageClass='k8s-nfs-storage' \
   --set persistentStorage.cacheData.storageClass='k8s-nfs-storage'
 ```
-- 命令解析：
+**注：**
 
-    `-n ${namespace} --create-namespace`: 创建并部署在那个名称空间
+`DDNS_ADMIN_LOGIN`是用于 web ui 的 htpasswd 用户名密码组合。您可以使用 htpasswd 创建一个：
 
-    `${release_name}`: release实例的名称
+```shell
+#默认值admin 2l4NX#zmJjeg
+htpasswd -nb user password
+```
 
-    `zyh-harbor/ddns-server`: release实例的路径，可使用"helm search repo zyh-harbor"命令查看
+`DDNS_DOMAINS`是网络服务的域和您的 dyndns 服务器的域区域（逗号分隔列表）
 
-    `--set`: 直接在命令行中设置值，允许多个值
+`DDNS_PARENT_NS`是您域的父名称服务器
 
-    **注：**
-
-    `DDNS_ADMIN_LOGIN`是用于 web ui 的 htpasswd 用户名密码组合。您可以使用 htpasswd 创建一个：
-    
-    ```shell
-    #默认值admin 2l4NX#zmJjeg
-    htpasswd -nb user password
-    ```
-    
-    `DDNS_DOMAINS`是网络服务的域和您的 dyndns 服务器的域区域（逗号分隔列表）
-    
-    `DDNS_PARENT_NS`是您域的父名称服务器
-    
-    `DDNS_DEFAULT_TTL`是您的 dyndns 服务器的默认 TTL
+`DDNS_DEFAULT_TTL`是您的 dyndns 服务器的默认 TTL
 
 ### 4. 部署成功后查看状态
 ```bash
-helm list -n ${namespace}
-helm status -n ${namespace} ${release_name}
-kubectl get po,svc -n ${namespace}
+helm list
+helm status ddns-server
+kubectl get po,svc
 ```
 
 ### 5.卸载chart
