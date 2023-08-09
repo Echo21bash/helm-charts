@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+data:
+  syslog-ng.conf: |
+    {{- .Values.config.syslog_ng_conf | nindent 4 }}
+

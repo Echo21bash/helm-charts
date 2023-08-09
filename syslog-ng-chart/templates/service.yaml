@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ .Release.Name }}
+  name: {{ .Release.Name }}-svc
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+  - name: syslog-ng-plain
+    protocol: UDP
+    port: {{ .Values.service.plain.port }}
+    targetPort: {{ .Values.service.plain.port }}
+    {{- if and (or (eq .Values.service.type "NodePort") (eq .Values.service.type "LoadBalancer")) .Values.service.plain.nodePort }}
+    nodePort: {{ .Values.service.plain.nodePort }}
+    {{- end }}
+  - name: syslog-ng-gb2312
+    protocol: UDP
+    port: {{ .Values.service.gb2312.port }}
+    targetPort: {{ .Values.service.gb2312.port }}
+    {{- if and (or (eq .Values.service.type "NodePort") (eq .Values.service.type "LoadBalancer")) .Values.service.gb2312.nodePort }}
+    nodePort: {{ .Values.service.gb2312.nodePort }}
+    {{- end }}
+  selector:
+    app: {{ .Release.Name }}
+
