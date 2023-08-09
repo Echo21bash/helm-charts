@@ -30,6 +30,7 @@ config:
       log-fifo-size(20480);
       log-msg-size(204800);
       use-dns(no);
+      dns-cache(no);
       on-error(fallback-to-string);
     };
         
