@@ -32,6 +32,8 @@ config:
       use-dns(no);
       dns-cache(no);
       on-error(fallback-to-string);
+      keep-timestamp(yes);
+      recv-time-zone("+08:00");
     };
         
     source s_network {
@@ -56,19 +58,24 @@ config:
     destination d_kafka {
       channel {
         rewrite {
-          set("${HOST}"    value(".eventv1.host"));
-          set("1"          value(".eventv1.@version"));
-          set("${ISODATE}" value(".eventv1.@timestamp") condition("${.eventv1.@timestamp}" eq ""));
-          set("${MESSAGE}" value(".eventv1.message")    condition("${.eventv1.message}" eq ""));
-          set("${MSG}"     value(".eventv1.message")    condition("${.eventv1.message}" eq ""));
-          set("generic"    value(".eventv1.type")       condition("${.eventv1.type}" eq ""));
+          set("${HOST}"               value(".syslog.host"));
+          set("1"                     value(".syslog.@version"));
+          set("syslog"                value(".syslog.type")); 
+          set("${S_ISODATE}"          value(".syslog.@timestamp"));
+          set("${PROGRAM}"            value(".syslog.program"));
+          set("${PID}"                value(".syslog.pid"));
+          set("${LEVEL_NUM}"          value(".syslog.level_num"));
+          set("${LEVEL}"              value(".syslog.level"));
+          set("${MESSAGE}"            value(".syslog.message"));
+          set("${MSGID}"              value(".syslog.messageid"));
+          set("${PRI}"                value(".syslog.pri"));
         };
         destination {
           kafka-c(config(queue.buffering.max.ms("1000"))
                 bootstrap-servers("elk-kafka:9092")
                 topic("syslog-ng")
                 fallback_topic("syslog-ng")
-                message("$(format-json --key .eventv1.* --rekey .eventv1.* --shift 9)"));
+                message("$(format-json msg.* --key .syslog.* --rekey .syslog.* --shift 8)"));
         };
       };
     };
