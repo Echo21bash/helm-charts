@@ -63,19 +63,19 @@ config:
           set("syslog"                value(".syslog.type")); 
           set("${S_ISODATE}"          value(".syslog.@timestamp"));
           set("${PROGRAM}"            value(".syslog.program"));
-          set("${PID}"                value(".syslog.pid"));
           set("${LEVEL_NUM}"          value(".syslog.level_num"));
           set("${LEVEL}"              value(".syslog.level"));
           set("${MESSAGE}"            value(".syslog.message"));
           set("${MSGID}"              value(".syslog.messageid"));
-          set("${PRI}"                value(".syslog.pri"));
+          set("${FACILITY}"           value(".syslog.facility"));
+          set("${FACILITY_NUM}"       value(".syslog.facility_num"));
         };
         destination {
           kafka-c(config(queue.buffering.max.ms("1000"))
                 bootstrap-servers("elk-kafka:9092")
                 topic("syslog-ng")
                 fallback_topic("syslog-ng")
-                message("$(format-json msg.* --key .syslog.* --rekey .syslog.* --shift 8)"));
+                message("$(format-json --key .syslog.* --rekey .syslog.* --shift 8)"));
         };
       };
     };
