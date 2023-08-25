@@ -125,3 +125,18 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+exporter:
+  enabled: false
+  image:
+    repository: prometheuscommunity/bind-exporter
+    tag: v0.7.0
+    pullPolicy: IfNotPresent
+  port: 8053
+  resources:
+    limits:
+      cpu: 1
+      memory: 1Gi
+    requests:
+      cpu: 500m
+      memory: 500Mi

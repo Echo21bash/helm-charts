@@ -70,6 +70,21 @@ spec:
           {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
+        {{- if .Values.exporter.enabled }}
+        - name: "{{ .Chart.Name }}-exporter"
+          image: "{{ .Values.exporter.image.repository }}:{{ .Values.exporter.image.tag }}"
+          env:
+          {{- range $key, $value := .Values.exporter.env }}
+            - name: {{ .name }}
+              value: {{ .value }}
+          {{- end }}
+          ports:
+         - name: metrics
+           containerPort: {{ .Values.exporter.port }}
+          imagePullPolicy: "{{ .Values.exporter.image.pullPolicy }}"
+          resources:
+            {{- toYaml .Values.exporter.resources | indent 10 }}
+         {{- end }}
       volumes:
       {{- if .Values.persistentStorage.dbData.enabled }}
         - name: dbdata
