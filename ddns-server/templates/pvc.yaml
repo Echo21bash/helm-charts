@@ -13,7 +13,7 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistentStorage.dbData.size }}
-  storageClassName: {{ .Values.persistentStorage.dbData.storageClass }}
+  storageClassName: {{ .Values.persistentStorage.storageClass }}
 {{- end }}
 
 ---
@@ -33,7 +33,7 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistentStorage.cacheData.size }}
-  storageClassName: {{ .Values.persistentStorage.cacheData.storageClass }}
+  storageClassName: {{ .Values.persistentStorage.storageClass }}
 {{- end }}
 
 

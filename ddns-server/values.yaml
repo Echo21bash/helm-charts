@@ -5,10 +5,10 @@
 replicaCount: 2
 
 image:
-  repository: registry-prod.cnzhiyuanhui.com:1555/service_components/ddns-server
+  repository: bbaerthlein/docker-ddns-server
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "1.1.1"
+  tag: "1.1.2"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -42,17 +42,16 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 persistentStorage:
+  storageClass: "k8s-nfs-storage"
   dbData:
     enabled: true
     path: /root/database
-    storageClass: "nfs-client"
     accessModes:
     - ReadWriteOnce
     size: 1Gi
   cacheData:
     enabled: true
     path: /var/cache/bind
-    storageClass: "nfs-client"
     accessModes:
     - ReadWriteOnce
     size: 1Gi
@@ -126,13 +125,27 @@ tolerations: []
 
 affinity: {}
 
+config:
+  named_conf_options: |
+    options {
+        directory "/var/cache/bind";
+        dnssec-validation auto;
+        recursion no;
+        allow-transfer { none; };
+        auth-nxdomain no;
+        listen-on-v6 { any; };
+    };
+    statistics-channels {
+        inet 127.0.0.1 port 8053 allow { 127.0.0.1; };
+    };
+
 exporter:
-  enabled: false
+  enabled: true
   image:
     repository: prometheuscommunity/bind-exporter
     tag: v0.7.0
     pullPolicy: IfNotPresent
-  port: 8053
+  port: 9019
   resources:
     limits:
       cpu: 1

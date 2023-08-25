@@ -27,8 +27,7 @@ helm install ddns-server aliyun-140052-public/ddns-server \
   --set env.DDNS_DOMAINS='gioneco.local.com' \
   --set env.DDNS_PARENT_NS='ns.local.com' \
   --set env.DDNS_DEFAULT_TTL='3600' \
-  --set persistentStorage.dbData.storageClass='k8s-nfs-storage' \
-  --set persistentStorage.cacheData.storageClass='k8s-nfs-storage'
+  --set persistentStorage.storageClass='k8s-nfs-storage'
 ```
 **注：**
 

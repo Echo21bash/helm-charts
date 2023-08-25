@@ -70,6 +70,9 @@ spec:
           {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
+            - name: {{ .Release.Name }}-named-conf-options
+              mountPath: /etc/bind/named.conf.options
+              subPath: named.conf.options
         {{- if .Values.exporter.enabled }}
         - name: "{{ .Chart.Name }}-exporter"
           image: "{{ .Values.exporter.image.repository }}:{{ .Values.exporter.image.tag }}"
@@ -79,12 +82,14 @@ spec:
               value: {{ .value }}
           {{- end }}
           ports:
-         - name: metrics
-           containerPort: {{ .Values.exporter.port }}
+          - name: metrics
+            containerPort: {{ .Values.exporter.port }}
           imagePullPolicy: "{{ .Values.exporter.image.pullPolicy }}"
+          {{- with .Values.exporter.resources }}
           resources:
-            {{- toYaml .Values.exporter.resources | indent 10 }}
-         {{- end }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        {{- end }}
       volumes:
       {{- if .Values.persistentStorage.dbData.enabled }}
         - name: dbdata
@@ -96,6 +101,9 @@ spec:
           persistentVolumeClaim:
             claimName: {{ include "ddns-server.fullname" . }}-cachedata
       {{- end }}
+        - name: {{ .Release.Name }}-named-conf-options
+          configMap:
+            name: {{ .Release.Name }}-named-conf-options
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
