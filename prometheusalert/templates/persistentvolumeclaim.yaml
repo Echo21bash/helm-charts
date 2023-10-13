@@ -1,0 +1,17 @@
+{{- if .Values.persistentStorage.enabled  }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "prometheusalert.fullname" . }}-db
+  labels:
+    {{- include "prometheusalert.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/resource-policy": keep
+spec:
+  accessModes: 
+  {{- toYaml .Values.persistentStorage.dbData.accessModes | nindent 4 }}
+  resources:
+    requests:
+      storage: {{ .Values.persistentStorage.dbData.size }}
+  storageClassName: {{ .Values.persistentStorage.storageClass }}
+{{- end }}
