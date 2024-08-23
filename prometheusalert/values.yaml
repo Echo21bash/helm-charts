@@ -9,8 +9,7 @@ global:
 replicaCount: 1
 
 image:
-  repository: registry-prod.cnzhiyuanhui.com:1555/service_components/feiyu563/prometheus-alert:v4.9
-  #repository: feiyu563/prometheus-alert:v4.9
+  repository: feiyu563/prometheus-alert:v4.9
   pullPolicy: Always  #IfNotPresent
 
 nameOverride: ""
